@@ -1,38 +1,59 @@
 #!/bin/bash
 
-echo "🚀 KÜRE Otomatik Kurulum Başlatılıyor..."
+echo "🚀 KÜRE Tüm Sistem Otomatik Kurulumu Başlatılıyor..."
 
-# Ana dizine git
 cd ~/kurev3test || exit
 echo "📁 Ana dizine geçildi: $(pwd)"
 
-# Yönetici paneli klasörü yoksa oluştur
+# === Admin Paneli Kurulumu ===
+echo "🔧 [1/3] Yönetici paneli kuruluyor..."
 if [ ! -d "yönetici-paneli" ]; then
-  echo "📦 Yönetici paneli klasörü oluşturuluyor..."
   mkdir yönetici-paneli
 fi
 
-cd yönetici-paneli || exit
-echo "📁 Yönetici paneli dizinine girildi."
+cd yönetici-paneli
+rm -rf admin-panel
+git clone https://github.com/emirhandesdemir/kure-admin-panel.git admin-panel
+cd admin-panel
+npm install
+cd ../..
 
-# Önceden klonlanmışsa sil
-if [ -d "admin-panel" ]; then
-  echo "🧹 Eski admin-panel klasörü siliniyor..."
-  rm -rf admin-panel
+# === Mobil Uygulama Kurulumu ===
+echo "📱 [2/3] Mobil uygulama kuruluyor..."
+if [ ! -d "mobil-uygulama" ]; then
+  mkdir mobil-uygulama
 fi
 
-# Admin panelini GitHub'dan klonla
-echo "🔽 Admin paneli klonlanıyor..."
-git clone https://github.com/emirhandesdemir/kure-admin-panel.git admin-panel
-
-# NPM bağımlılıklarını yükle
-cd admin-panel || exit
-echo "📦 npm install başlatılıyor..."
+cd mobil-uygulama
+rm -rf kure-app
+git clone https://github.com/emirhandesdemir/kure-mobile-app.git kure-app
+cd kure-app
 npm install
+cd ../..
 
+# === Bot Sistemi Kurulumu ===
+echo "🤖 [3/3] Bot sistemi kuruluyor..."
+if [ ! -d "bot-sistemi" ]; then
+  mkdir bot-sistemi
+fi
+
+cd bot-sistemi
+rm -rf kure-bot
+git clone https://github.com/emirhandesdemir/kure-bot.git kure-bot
+cd kure-bot
+npm install
+cd ../..
+
+# === Kurulum Tamamlandı ===
 echo ""
-echo "✅ Kurulum tamamlandı! Paneli çalıştırmak için:"
-echo "---------------------------------------------"
-echo "cd ~/kurev3test/yönetici-paneli/admin-panel"
-echo "npm run dev"
-echo "---------------------------------------------"
+echo "✅ Tüm sistem başarıyla kuruldu!"
+echo ""
+echo "📂 Yönetici paneli başlatmak için:"
+echo "cd ~/kurev3test/yönetici-paneli/admin-panel && npm run dev"
+echo ""
+echo "📂 Mobil uygulamayı başlatmak için:"
+echo "cd ~/kurev3test/mobil-uygulama/kure-app && npm run start"
+echo ""
+echo "📂 Bot sistemini başlatmak için:"
+echo "cd ~/kurev3test/bot-sistemi/kure-bot && npm run start"
+echo ""
